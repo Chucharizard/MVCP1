@@ -1,16 +1,16 @@
-@model WAMVC.Models.DetallePedidoModel
+﻿@model WAMVC.Models.DetallePedidoModel
 
 @{
-    ViewData["Title"] = "Detalles del Art�culo";
+    ViewData["Title"] = "Detalles del Artículo";
 }
 
-<h1>Detalles del Art�culo en Pedido</h1>
+<h1>Detalles del Artículo en Pedido</h1>
 
 <div class="row">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h4>?? Informaci�n del Detalle</h4>
+                <h4>📋 Información del Detalle</h4>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -57,7 +57,7 @@
 
         <div class="card mt-4">
             <div class="card-header">
-                <h5>?? C�lculos</h5>
+                <h5>🧮 Cálculos</h5>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -85,7 +85,7 @@
 
         <div class="card mt-4">
             <div class="card-header">
-                <h5>?? Informaci�n del Producto</h5>
+                <h5>📦 Información del Producto</h5>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -117,25 +117,25 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h5>??? Acciones</h5>
+                <h5>⚙️ Acciones</h5>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                        ?? Editar Detalle
+                        ✏️ Editar Detalle
                     </a>
                     <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                        ??? Eliminar del Pedido
+                        🗑️ Eliminar del Pedido
                     </a>
                     <hr>
                     <a asp-controller="Pedido" asp-action="Details" asp-route-id="@Model.IdPedido" class="btn btn-primary">
-                        ?? Ver Pedido Completo
+                        📄 Ver Pedido Completo
                     </a>
                     <a asp-action="Index" class="btn btn-secondary">
-                        ? Volver a la Lista
+                        📋 Volver a la Lista
                     </a>
                     <a asp-action="Create" asp-route-pedidoId="@Model.IdPedido" class="btn btn-success">
-                        ? Agregar Otro Art�culo
+                        ➕ Agregar Otro Artículo
                     </a>
                 </div>
             </div>
@@ -143,7 +143,7 @@
 
         <div class="card mt-3">
             <div class="card-header">
-                <h6>?? Informaci�n</h6>
+                <h6>💡 Información</h6>
             </div>
             <div class="card-body">
                 <small class="text-muted">

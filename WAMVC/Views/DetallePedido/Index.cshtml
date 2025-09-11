@@ -1,10 +1,10 @@
-@model IEnumerable<WAMVC.Models.DetallePedidoModel>
+﻿@model IEnumerable<WAMVC.Models.DetallePedidoModel>
 
 @{
-    ViewData["Title"] = "Gesti�n de Detalles de Pedidos";
+    ViewData["Title"] = "Gestión de Detalles de Pedidos";
 }
 
-<h1>Gesti�n de Detalles de Pedidos</h1>
+<h1>Gestión de Detalles de Pedidos</h1>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -23,8 +23,8 @@
 }
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">? Agregar Nuevo Detalle</a>
-    <a asp-controller="Pedido" asp-action="Index" class="btn btn-secondary">?? Ver Pedidos</a>
+    <a asp-action="Create" class="btn btn-primary"> Agregar Nuevo Detalle</a>
+    <a asp-controller="Pedido" asp-action="Index" class="btn btn-secondary"> Ver Pedidos</a>
 </p>
 
 @if (Model.Any())
@@ -68,9 +68,9 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Editar">??</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Ver Detalles">???</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Eliminar">???</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Editar">✏️</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Ver Detalles">👁️</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Eliminar">🗑️</a>
                             </div>
                         </td>
                     </tr>
@@ -83,20 +83,20 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5>?? Resumen General</h5>
+                    <h5>Resumen General</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>Total de detalles:</strong> @Model.Count()</p>
                     <p><strong>Valor total de todos los detalles:</strong> <span class="text-success">@Model.Sum(d => d.Cantidad * d.PrecioUnitario).ToString("C")</span></p>
-                    <p><strong>Art�culos totales:</strong> @Model.Sum(d => d.Cantidad) unidades</p>
-                    <p><strong>Pedidos �nicos:</strong> @Model.Select(d => d.IdPedido).Distinct().Count()</p>
+                    <p><strong>Artículos totales:</strong> @Model.Sum(d => d.Cantidad) unidades</p>
+                    <p><strong>Pedidos únicos:</strong> @Model.Select(d => d.IdPedido).Distinct().Count()</p>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5>?? Top Productos</h5>
+                    <h5>Top Productos</h5>
                 </div>
                 <div class="card-body">
                     @{
@@ -116,12 +116,12 @@
 else
 {
     <div class="alert alert-info" role="alert">
-        <h4 class="alert-heading">?? No hay detalles de pedidos registrados</h4>
-        <p>Comienza agregando art�culos a los pedidos existentes.</p>
+        <h4 class="alert-heading">No hay detalles de pedidos registrados</h4>
+        <p>Comienza agregando artículos a los pedidos existentes.</p>
         <hr>
         <p class="mb-0">
-            <a asp-action="Create" class="btn btn-primary">? Agregar Primer Detalle</a>
-            <a asp-controller="Pedido" asp-action="Index" class="btn btn-outline-secondary">?? Ver Pedidos</a>
+            <a asp-action="Create" class="btn btn-primary">Agregar Primer Detalle</a>
+            <a asp-controller="Pedido" asp-action="Index" class="btn btn-outline-secondary">Ver Pedidos</a>
         </p>
     </div>
 }

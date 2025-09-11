@@ -1,4 +1,4 @@
-@model WAMVC.Models.PedidoModel
+﻿@model WAMVC.Models.PedidoModel
 
 @{
     ViewData["Title"] = "Detalles del Pedido";
@@ -18,7 +18,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h4>?? Informaci�n del Pedido</h4>
+                <h4>📋 Información del Pedido</h4>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -56,9 +56,9 @@
         {
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>??? Art�culos del Pedido</h5>
+                    <h5>🛒 Artículos del Pedido</h5>
                     <a asp-controller="DetallePedido" asp-action="Create" asp-route-pedidoId="@Model.Id" class="btn btn-sm btn-success">
-                        ? Agregar Art�culo
+                        ➕ Agregar Artículo
                     </a>
                 </div>
                 <div class="card-body">
@@ -93,9 +93,9 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a asp-controller="DetallePedido" asp-action="Edit" asp-route-id="@detalle.Id" class="btn btn-sm btn-warning" title="Editar">??</a>
-                                                <a asp-controller="DetallePedido" asp-action="Details" asp-route-id="@detalle.Id" class="btn btn-sm btn-info" title="Ver Detalles">???</a>
-                                                <a asp-controller="DetallePedido" asp-action="Delete" asp-route-id="@detalle.Id" class="btn btn-sm btn-danger" title="Eliminar">???</a>
+                                                <a asp-controller="DetallePedido" asp-action="Edit" asp-route-id="@detalle.Id" class="btn btn-sm btn-warning" title="Editar">✏️</a>
+                                                <a asp-controller="DetallePedido" asp-action="Details" asp-route-id="@detalle.Id" class="btn btn-sm btn-info" title="Ver Detalles">👁️</a>
+                                                <a asp-controller="DetallePedido" asp-action="Delete" asp-route-id="@detalle.Id" class="btn btn-sm btn-danger" title="Eliminar">🗑️</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -117,12 +117,12 @@
         {
             <div class="card mt-4">
                 <div class="card-header">
-                    <h5>??? Art�culos del Pedido</h5>
+                    <h5>🛒 Artículos del Pedido</h5>
                 </div>
                 <div class="card-body text-center">
-                    <p class="text-muted">Este pedido a�n no tiene art�culos agregados.</p>
+                    <p class="text-muted">Este pedido aún no tiene artículos agregados.</p>
                     <a asp-controller="DetallePedido" asp-action="Create" asp-route-pedidoId="@Model.Id" class="btn btn-primary">
-                        ? Agregar Primer Art�culo
+                        ➕ Agregar Primer Artículo
                     </a>
                 </div>
             </div>
@@ -132,22 +132,22 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h5>??? Acciones del Pedido</h5>
+                <h5>⚙️ Acciones del Pedido</h5>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">
-                        ?? Editar Pedido
+                        ✏️ Editar Pedido
                     </a>
                     <a asp-controller="DetallePedido" asp-action="Create" asp-route-pedidoId="@Model.Id" class="btn btn-success">
-                        ? Agregar Art�culo
+                        ➕ Agregar Artículo
                     </a>
                     <hr>
                     <a asp-action="Index" class="btn btn-secondary">
-                        ? Volver a Lista de Pedidos
+                        📋 Volver a Lista de Pedidos
                     </a>
                     <a asp-controller="DetallePedido" asp-action="Index" class="btn btn-outline-info">
-                        ?? Gestionar Detalles
+                        📄 Gestionar Detalles
                     </a>
                 </div>
             </div>
@@ -157,10 +157,10 @@
         {
             <div class="card mt-3">
                 <div class="card-header">
-                    <h6>?? Resumen del Pedido</h6>
+                    <h6>📊 Resumen del Pedido</h6>
                 </div>
                 <div class="card-body">
-                    <p><strong>Art�culos �nicos:</strong> @Model.DetallePedidos.Count()</p>
+                    <p><strong>Artículos únicos:</strong> @Model.DetallePedidos.Count()</p>
                     <p><strong>Cantidad total:</strong> @Model.DetallePedidos.Sum(d => d.Cantidad) unidades</p>
                     <p><strong>Monto registrado:</strong> <span class="text-success">@Model.MontoTotal.ToString("C")</span></p>
                     <p><strong>Monto calculado:</strong> <span class="text-info">@Model.DetallePedidos.Sum(d => d.Cantidad * d.PrecioUnitario).ToString("C")</span></p>
@@ -172,11 +172,11 @@
                     @if (Math.Abs(diferencia) > 0.01m)
                     {
                         <p><strong>Diferencia:</strong> <span class="text-warning">@diferencia.ToString("C")</span></p>
-                        <small class="text-muted">Puede necesitar recalculaci�n</small>
+                        <small class="text-muted">Puede necesitar recalculación</small>
                     }
                     else
                     {
-                        <p><span class="text-success">? Montos coinciden</span></p>
+                        <p><span class="text-success">✅ Montos coinciden</span></p>
                     }
                 </div>
             </div>

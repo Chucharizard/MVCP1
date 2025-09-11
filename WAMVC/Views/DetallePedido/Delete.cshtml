@@ -1,23 +1,23 @@
-@model WAMVC.Models.DetallePedidoModel
+﻿@model WAMVC.Models.DetallePedidoModel
 
 @{
     ViewData["Title"] = "Eliminar Detalle";
 }
 
-<h1>Eliminar Art�culo del Pedido</h1>
+<h1>Eliminar Artículo del Pedido</h1>
 
 <div class="alert alert-warning" role="alert">
-    <h4 class="alert-heading">?? Confirmaci�n Requerida</h4>
-    <p>�Est� seguro de que desea eliminar este art�culo del pedido?</p>
+    <h4 class="alert-heading">⚠️ Confirmación Requerida</h4>
+    <p>¿Está seguro de que desea eliminar este artículo del pedido?</p>
     <hr>
-    <p class="mb-0">Esta acci�n restaurar� el stock del producto y recalcular� el total del pedido.</p>
+    <p class="mb-0">Esta acción restaurará el stock del producto y recalculará el total del pedido.</p>
 </div>
 
 <div class="row">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h4>?? Informaci�n del Detalle a Eliminar</h4>
+                <h4>📋 Información del Detalle a Eliminar</h4>
             </div>
             <div class="card-body">
                 <dl class="row">
@@ -69,20 +69,20 @@
 
         <div class="card mt-4">
             <div class="card-header">
-                <h5>?? Impacto de la Eliminaci�n</h5>
+                <h5>📊 Impacto de la Eliminación</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6>?? Stock del Producto</h6>
+                        <h6>📦 Stock del Producto</h6>
                         <p><strong>Stock actual:</strong> <span class="badge bg-secondary">@Model.Producto!.Stock unidades</span></p>
-                        <p><strong>Stock despu�s:</strong> <span class="badge bg-success">@(Model.Producto.Stock + Model.Cantidad) unidades</span></p>
-                        <p><small class="text-success">? Se restaurar�n @Model.Cantidad unidades</small></p>
+                        <p><strong>Stock después:</strong> <span class="badge bg-success">@(Model.Producto.Stock + Model.Cantidad) unidades</span></p>
+                        <p><small class="text-success">✅ Se restaurarán @Model.Cantidad unidades</small></p>
                     </div>
                     <div class="col-md-6">
-                        <h6>?? Monto del Pedido</h6>
-                        <p><strong>Se descontar�:</strong> <span class="text-danger">@((Model.Cantidad * Model.PrecioUnitario).ToString("C"))</span></p>
-                        <p><small class="text-info">?? El monto total del pedido se recalcular� autom�ticamente</small></p>
+                        <h6>💰 Monto del Pedido</h6>
+                        <p><strong>Se descontará:</strong> <span class="text-danger">@((Model.Cantidad * Model.PrecioUnitario).ToString("C"))</span></p>
+                        <p><small class="text-info">🔄 El monto total del pedido se recalculará automáticamente</small></p>
                     </div>
                 </div>
             </div>
@@ -92,27 +92,27 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h5>??? Acciones</h5>
+                <h5>⚙️ Acciones</h5>
             </div>
             <div class="card-body">
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-danger">
-                            ??? Confirmar Eliminaci�n
+                            🗑️ Confirmar Eliminación
                         </button>
                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                            ?? Editar en su lugar
+                            ✏️ Editar en su lugar
                         </a>
                         <hr>
                         <a asp-action="Index" class="btn btn-secondary">
-                            ? Volver a la Lista
+                            📋 Volver a la Lista
                         </a>
                         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
-                            ??? Ver Detalles
+                            👁️ Ver Detalles
                         </a>
                         <a asp-controller="Pedido" asp-action="Details" asp-route-id="@Model.IdPedido" class="btn btn-outline-primary">
-                            ?? Ver Pedido Completo
+                            📄 Ver Pedido Completo
                         </a>
                     </div>
                 </form>
@@ -121,14 +121,14 @@
 
         <div class="card mt-3">
             <div class="card-header">
-                <h6>?? Recordatorio</h6>
+                <h6>💡 Recordatorio</h6>
             </div>
             <div class="card-body">
                 <small class="text-muted">
                     <ul class="mb-0">
-                        <li>El stock se restaurar� autom�ticamente</li>
-                        <li>El monto del pedido se actualizar�</li>
-                        <li>Esta acci�n no se puede deshacer</li>
+                        <li>El stock se restaurará automáticamente</li>
+                        <li>El monto del pedido se actualizará</li>
+                        <li>Esta acción no se puede deshacer</li>
                         <li>Puede editar en lugar de eliminar</li>
                     </ul>
                 </small>
