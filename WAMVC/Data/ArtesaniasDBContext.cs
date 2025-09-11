@@ -11,31 +11,37 @@ namespace WAMVC.Data
         public DbSet<ClienteModel> Clientes { get; set; }
         public DbSet<PedidoModel> Pedidos { get; set; }
         public DbSet<DetallePedidoModel> DetallePedidos { get; set; }
-    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                // Configuración de la relación entre Pedido y Cliente (Many-to-One)
-                // Un Pedido tiene Un Cliente, y Un Cliente tiene Muchos Pedidos
-                modelBuilder.Entity<PedidoModel>()
-                    .HasOne(p => p.Cliente) // Un Pedido tiene un Cliente
-                    .WithMany(c => c.Pedidos) // Un Cliente tiene muchos Pedidos
-                    .HasForeignKey(p => p.IdCliente); // La clave foránea es IdCliente
+        {
+            // Configuración de precisión para campos decimales
+            modelBuilder.Entity<ProductoModel>()
+                .Property(p => p.Precio)
+                .HasPrecision(10, 2); // 10 dígitos totales, 2 decimales
 
-                // Configuración de la relación entre Pedido y DetallePedido (One-to-Many)
-                // Un Pedido tiene Muchos Detalles de Pedido
-                modelBuilder.Entity<PedidoModel>()
-                    .HasMany(p => p.DetallePedidos) // Un Pedido tiene muchos DetallePedidos
-                    .WithOne(d => d.Pedido) // Un DetallePedido pertenece a un Pedido
-                    .HasForeignKey(d => d.IdPedido); // La clave foránea es IdPedido
+            modelBuilder.Entity<PedidoModel>()
+                .Property(p => p.MontoTotal)
+                .HasPrecision(12, 2); // 12 dígitos totales, 2 decimales
 
-                // Configuración de la relación entre DetallePedido y Producto (Many-to-One)
-                // Un DetallePedido tiene Un Producto, y Un Producto tiene Muchos Detalles de Pedido
-                modelBuilder.Entity<DetallePedidoModel>()
-                    .HasOne(d => d.Producto) // Un DetallePedido tiene un Producto
-                    .WithMany(p => p.DetallePedidos) // Un Producto tiene muchos DetallePedidos
-                    .HasForeignKey(d => d.IdProducto); // La clave foránea es IdProducto
-            }
+            modelBuilder.Entity<DetallePedidoModel>()
+                .Property(d => d.PrecioUnitario)
+                .HasPrecision(10, 2); // 10 dígitos totales, 2 decimales
+
+            // Configuración de relaciones
+            modelBuilder.Entity<PedidoModel>()
+                .HasOne(p => p.Cliente)
+                .WithMany(c => c.Pedidos)
+                .HasForeignKey(p => p.IdCliente);
+
+            modelBuilder.Entity<PedidoModel>()
+                .HasMany(p => p.DetallePedidos)
+                .WithOne(d => d.Pedido)
+                .HasForeignKey(d => d.IdPedido);
+
+            modelBuilder.Entity<DetallePedidoModel>()
+                .HasOne(d => d.Producto)
+                .WithMany(p => p.DetallePedidos)
+                .HasForeignKey(d => d.IdProducto);
         }
-
     }
+}
