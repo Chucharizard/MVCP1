@@ -12,8 +12,8 @@ using WAMVC.Data;
 namespace WAMVC.Migrations
 {
     [DbContext(typeof(ArtesaniasDBContext))]
-    [Migration("20250911020609_ConfigurarDecimales")]
-    partial class ConfigurarDecimales
+    [Migration("20250911025850_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,7 +93,8 @@ namespace WAMVC.Migrations
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("FechaPedido")
                         .HasColumnType("datetime2");

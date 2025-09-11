@@ -1,29 +1,34 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WAMVC.Models
 {
     public class DetallePedidoModel
     {
         public int Id { get; set; }
-        public int IdPedido{ get; set; }
 
-        
+        [Display(Name = "Número de Orden")]
+        [Required(ErrorMessage = "Se requiere el número de orden")]
+        [Range(1, int.MaxValue, ErrorMessage = "Número de orden inválido")]
+        public int IdPedido { get; set; }
+
+        [Display(Name = "Artículo Seleccionado")]
+        [Required(ErrorMessage = "Debe seleccionar un artículo")]
+        [Range(1, int.MaxValue, ErrorMessage = "Selección de artículo inválida")]
         public int IdProducto { get; set; }
 
-
-        [Required(ErrorMessage = "La cantidad es obligatoria")]
-        [Range(1, 1000, ErrorMessage = "La cantidad debe estar entre 1 y 1000")]
-        [Display(Name = "Cantidad")]
+        [Display(Name = "Cantidad Solicitada")]
+        [Required(ErrorMessage = "Indica cuántas unidades necesitas")]
+        [Range(1, 1000, ErrorMessage = "Puedes solicitar entre 1 y 1,000 unidades")]
         public int Cantidad { get; set; }
 
-        [Required(ErrorMessage = "El precio unitario es obligatorio")]
-        [Range(0.01, 999999.99, ErrorMessage = "El precio debe ser mayor a 0")]
-        [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = false)]
-        [Display(Name = "Precio Unitario")]
+        [Display(Name = "Precio al Momento")]
+        [Required(ErrorMessage = "Se debe registrar el precio vigente")]
+        [Column(TypeName = "decimal(10,2)")]
+        [Range(0.10, 50000.00, ErrorMessage = "El precio debe estar entre $0.10 y $50,000.00")]
         public decimal PrecioUnitario { get; set; }
 
-        public PedidoModel Pedido { get; set; }
-        public ProductoModel Producto { get; set; }
+        public PedidoModel? Pedido { get; set; }
+        public ProductoModel? Producto { get; set; }
     }
 }
