@@ -28,7 +28,7 @@ namespace WAMVC.Controllers
             return View(pedidos);
         }
 
-        // GET: Pedido/Details/5
+        // GET: Pedido/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -77,7 +77,7 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // GET: Pedido/Edit/5
+        // GET: Pedido/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -94,7 +94,7 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // POST: Pedido/Edit/5
+        // POST: Pedido/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdCliente,FechaPedido,Direccion,MontoTotal")] PedidoModel pedidoModel)
@@ -129,7 +129,7 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // GET: Pedido/Delete/5
+        // GET: Pedido/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -149,7 +149,7 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // POST: Pedido/Delete/5
+        // POST: Pedido/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

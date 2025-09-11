@@ -25,7 +25,7 @@ namespace WAMVC.Controllers
             return View(await _context.Productos.ToListAsync());
         }
 
-        // GET: Producto/Details/5
+        // GET: Producto/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -116,7 +116,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // GET: Producto/Delete/5
+        // GET: Producto/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +134,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // POST: Producto/Delete/5
+        // POST: Producto/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

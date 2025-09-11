@@ -30,7 +30,6 @@ namespace WAMVC.Controllers
             return View(detallePedidos);
         }
 
-        // GET: DetallePedido/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -96,16 +95,14 @@ namespace WAMVC.Controllers
                     detallePedidoModel.PrecioUnitario = producto.Precio;
                 }
 
-                // Agregar el detalle
                 _context.Add(detallePedidoModel);
                 
-                // Actualizar stock del producto
+     
                 producto.Stock -= detallePedidoModel.Cantidad;
                 _context.Update(producto);
                 
                 await _context.SaveChangesAsync();
                 
-                // Recalcular el monto total del pedido
                 await RecalcularMontoPedido(detallePedidoModel.IdPedido);
                 
                 TempData["SuccessMessage"] = $"Artículo agregado al pedido exitosamente. Stock actualizado: {producto.Stock} unidades restantes.";
@@ -116,7 +113,6 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
-        // GET: DetallePedido/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -133,14 +129,12 @@ namespace WAMVC.Controllers
                 return NotFound();
             }
             
-            // Guardar la cantidad original para manejar el stock
             ViewData["CantidadOriginal"] = detallePedidoModel.Cantidad;
             
             PopulateDropdowns(detallePedidoModel);
             return View(detallePedidoModel);
         }
 
-        // POST: DetallePedido/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdPedido,IdProducto,Cantidad,PrecioUnitario")] DetallePedidoModel detallePedidoModel, int cantidadOriginal)
@@ -163,10 +157,8 @@ namespace WAMVC.Controllers
                         return View(detallePedidoModel);
                     }
 
-                    // Calcular la diferencia en cantidad
                     int diferenciaCantidad = detallePedidoModel.Cantidad - cantidadOriginal;
                     
-                    // Verificar que hay stock suficiente si se está aumentando la cantidad
                     if (diferenciaCantidad > 0 && producto.Stock < diferenciaCantidad)
                     {
                         ModelState.AddModelError("Cantidad", $"Stock insuficiente. Solo hay {producto.Stock} unidades adicionales disponibles.");
@@ -175,15 +167,12 @@ namespace WAMVC.Controllers
                         return View(detallePedidoModel);
                     }
 
-                    // Actualizar stock del producto
                     producto.Stock -= diferenciaCantidad;
                     _context.Update(producto);
-                    
-                    // Actualizar el detalle
+                 
                     _context.Update(detallePedidoModel);
                     await _context.SaveChangesAsync();
                     
-                    // Recalcular el monto total del pedido
                     await RecalcularMontoPedido(detallePedidoModel.IdPedido);
                     
                     TempData["SuccessMessage"] = "Detalle del pedido actualizado exitosamente.";
@@ -207,7 +196,6 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
-        // GET: DetallePedido/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -229,7 +217,6 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
-        // POST: DetallePedido/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -240,7 +227,6 @@ namespace WAMVC.Controllers
                 
             if (detallePedidoModel != null)
             {
-                // Devolver el stock al producto
                 if (detallePedidoModel.Producto != null)
                 {
                     detallePedidoModel.Producto.Stock += detallePedidoModel.Cantidad;
@@ -252,7 +238,6 @@ namespace WAMVC.Controllers
                 _context.DetallePedidos.Remove(detallePedidoModel);
                 await _context.SaveChangesAsync();
                 
-                // Recalcular el monto total del pedido
                 await RecalcularMontoPedido(pedidoId);
                 
                 TempData["SuccessMessage"] = "Artículo eliminado del pedido y stock restaurado exitosamente.";
@@ -262,7 +247,6 @@ namespace WAMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Método para obtener el precio actual de un producto (AJAX)
         [HttpGet]
         public async Task<JsonResult> ObtenerPrecioProducto(int idProducto)
         {

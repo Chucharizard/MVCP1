@@ -1,9 +1,85 @@
 ﻿@model HomeModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio - Artesanías";
 }
 
-<div class="text-center">
-    <h1 class="display-4">@Model.Mensaje <br /><b>@Model.Destinatario</b></h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4 text-primary">@Model.Mensaje</h1>
+    <h2 class="h3 text-secondary">@Model.Destinatario</h2>
+    <p class="lead">Gestiona tu negocio de manera sencilla</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="display-1 text-primary mb-3">👥</div>
+                <h5 class="card-title">Clientes</h5>
+                <p class="card-text">Gestiona tus clientes</p>
+                <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Ver Clientes</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="display-1 text-success mb-3">📦</div>
+                <h5 class="card-title">Productos</h5>
+                <p class="card-text">Catálogo de artesanías</p>
+                <a href="@Url.Action("Index", "Producto")" class="btn btn-success">Ver Productos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="display-1 text-warning mb-3">🛒</div>
+                <h5 class="card-title">Pedidos</h5>
+                <p class="card-text">Gestiona las ventas</p>
+                <a href="@Url.Action("Index", "Pedido")" class="btn btn-warning">Ver Pedidos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="display-1 text-info mb-3">📋</div>
+                <h5 class="card-title">Detalles</h5>
+                <p class="card-text">Información detallada</p>
+                <a href="@Url.Action("Index", "DetallePedido")" class="btn btn-info">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h4 class="text-center mb-4">Acciones Rápidas</h4>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="d-grid">
+                    <a href="@Url.Action("Create", "Cliente")" class="btn btn-outline-primary btn-lg">
+                        Nuevo Cliente
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-grid">
+                    <a href="@Url.Action("Create", "Producto")" class="btn btn-outline-success btn-lg">
+                        Nuevo Producto
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-grid">
+                    <a href="@Url.Action("Create", "Pedido")" class="btn btn-outline-warning btn-lg">
+                        Nuevo Pedido
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

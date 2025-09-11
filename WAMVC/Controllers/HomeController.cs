@@ -16,8 +16,8 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         HomeModel Mode = new HomeModel();
-        Mode.Mensaje = "Hola Mundito!";
-        //Mode.Destinatario = "Docentes";
+        Mode.Mensaje = "Pensamientos";
+        Mode.Destinatario = "Panaderos";
         return View(Mode);
     }
 
