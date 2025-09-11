@@ -1,0 +1,197 @@
+@model WAMVC.Models.DetallePedidoModel
+
+@{
+    ViewData["Title"] = "Editar Detalle del Pedido";
+}
+
+<h1>Editar Detalle del Pedido</h1>
+
+<h4>Información del Artículo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" name="cantidadOriginal" value="@ViewData["CantidadOriginal"]" />
+            
+            <div class="form-group mb-3">
+                <label asp-for="IdPedido" class="control-label"></label>
+                <select asp-for="IdPedido" class="form-control" asp-items="ViewBag.IdPedido" disabled>
+                    <option value="">-- Seleccione un pedido --</option>
+                </select>
+                <input type="hidden" asp-for="IdPedido" />
+                <span asp-validation-for="IdPedido" class="text-danger"></span>
+                <small class="form-text text-muted">No se puede cambiar el pedido en la edición</small>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="IdProducto" class="control-label"></label>
+                <select asp-for="IdProducto" class="form-control" asp-items="ViewBag.IdProducto" id="productoSelect">
+                    <option value="">-- Seleccione un producto --</option>
+                </select>
+                <span asp-validation-for="IdProducto" class="text-danger"></span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Cantidad" class="control-label"></label>
+                        <input asp-for="Cantidad" class="form-control" type="number" min="1" max="1000" id="cantidadInput" />
+                        <span asp-validation-for="Cantidad" class="text-danger"></span>
+                        <small id="stockInfo" class="form-text text-muted"></small>
+                        <small class="form-text text-info">Cantidad original: @ViewData["CantidadOriginal"]</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="PrecioUnitario" class="control-label"></label>
+                        <input asp-for="PrecioUnitario" class="form-control" step="0.01" id="precioInput" />
+                        <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+                        <small class="form-text text-muted">Puede modificar el precio si es necesario</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>?? Cálculo del Subtotal</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Cantidad:</strong> <span id="displayCantidad">@Model.Cantidad</span> unidades</p>
+                            <p><strong>Precio unitario:</strong> <span id="displayPrecio">@Model.PrecioUnitario.ToString("C")</span></p>
+                            <hr>
+                            <p><strong>Subtotal:</strong> <span id="displaySubtotal" class="text-success">@((Model.Cantidad * Model.PrecioUnitario).ToString("C"))</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>?? Cambios en Stock</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Cantidad original:</strong> @ViewData["CantidadOriginal"]</p>
+                            <p><strong>Nueva cantidad:</strong> <span id="nuevaCantidad">@Model.Cantidad</span></p>
+                            <p><strong>Diferencia:</strong> <span id="diferenciaCantidad" class="fw-bold">0</span></p>
+                            <small class="text-muted">Stock se ajustará automáticamente</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mt-3">
+                <input type="submit" value="Guardar Cambios" class="btn btn-primary" id="submitBtn" />
+                <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">Ver Detalles</a>
+                <a asp-controller="Pedido" asp-action="Details" asp-route-id="@Model.IdPedido" class="btn btn-outline-success">Ver Pedido</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            let stockDisponible = 0;
+            let cantidadOriginal = @ViewData["CantidadOriginal"];
+            let productoActual = @Model.IdProducto;
+            
+            // Cargar información del producto actual
+            if (productoActual) {
+                cargarInfoProducto(productoActual);
+            }
+            
+            // Cuando cambie el producto seleccionado
+            $('#productoSelect').change(function() {
+                var idProducto = $(this).val();
+                if (idProducto) {
+                    cargarInfoProducto(idProducto);
+                } else {
+                    $('#stockInfo').text('');
+                    stockDisponible = 0;
+                }
+                calcularSubtotal();
+                calcularDiferencia();
+            });
+            
+            function cargarInfoProducto(idProducto) {
+                $.ajax({
+                    url: '@Url.Action("ObtenerPrecioProducto", "DetallePedido")',
+                    type: 'GET',
+                    data: { idProducto: idProducto },
+                    success: function(data) {
+                        // Si es el mismo producto, considerar la cantidad que se va a liberar
+                        if (idProducto == productoActual) {
+                            stockDisponible = data.stock + cantidadOriginal;
+                            $('#stockInfo').text(`Stock disponible: ${stockDisponible} unidades (incluyendo ${cantidadOriginal} de este detalle)`).addClass('text-info');
+                        } else {
+                            stockDisponible = data.stock;
+                            $('#stockInfo').text(`Stock disponible: ${stockDisponible} unidades`).removeClass('text-info');
+                        }
+                        
+                        if (stockDisponible > 0) {
+                            $('#stockInfo').removeClass('text-danger').addClass('text-success');
+                            $('#cantidadInput').attr('max', stockDisponible);
+                            $('#cantidadInput').prop('disabled', false);
+                        } else {
+                            $('#stockInfo').text('Sin stock disponible').removeClass('text-success').addClass('text-danger');
+                            $('#cantidadInput').prop('disabled', true);
+                        }
+                    }
+                });
+            }
+            
+            // Cuando cambie la cantidad
+            $('#cantidadInput').on('input', function() {
+                var cantidad = parseInt($(this).val()) || 0;
+                
+                if (cantidad > stockDisponible) {
+                    $(this).val(stockDisponible);
+                    cantidad = stockDisponible;
+                }
+                
+                calcularSubtotal();
+                calcularDiferencia();
+            });
+            
+            // Cuando cambie el precio
+            $('#precioInput').on('input', function() {
+                calcularSubtotal();
+            });
+            
+            function calcularSubtotal() {
+                var cantidad = parseInt($('#cantidadInput').val()) || 0;
+                var precio = parseFloat($('#precioInput').val()) || 0;
+                var subtotal = cantidad * precio;
+                
+                $('#displayCantidad').text(cantidad);
+                $('#displayPrecio').text('$' + precio.toFixed(2));
+                $('#displaySubtotal').text('$' + subtotal.toFixed(2));
+            }
+            
+            function calcularDiferencia() {
+                var nuevaCantidad = parseInt($('#cantidadInput').val()) || 0;
+                var diferencia = nuevaCantidad - cantidadOriginal;
+                
+                $('#nuevaCantidad').text(nuevaCantidad);
+                
+                if (diferencia > 0) {
+                    $('#diferenciaCantidad').text('+' + diferencia).removeClass('text-warning text-success').addClass('text-danger');
+                } else if (diferencia < 0) {
+                    $('#diferenciaCantidad').text(diferencia).removeClass('text-danger text-success').addClass('text-warning');
+                } else {
+                    $('#diferenciaCantidad').text('0').removeClass('text-danger text-warning').addClass('text-success');
+                }
+            }
+            
+            // Cálculos iniciales
+            calcularSubtotal();
+            calcularDiferencia();
+        });
+    </script>
+}

@@ -1,0 +1,138 @@
+@model WAMVC.Models.DetallePedidoModel
+
+@{
+    ViewData["Title"] = "Eliminar Detalle";
+}
+
+<h1>Eliminar Artículo del Pedido</h1>
+
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">?? Confirmación Requerida</h4>
+    <p>¿Está seguro de que desea eliminar este artículo del pedido?</p>
+    <hr>
+    <p class="mb-0">Esta acción restaurará el stock del producto y recalculará el total del pedido.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>?? Información del Detalle a Eliminar</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        Pedido #
+                    </dt>
+                    <dd class="col-sm-8">
+                        <a asp-controller="Pedido" asp-action="Details" asp-route-id="@Model.IdPedido" class="btn btn-sm btn-outline-primary">
+                            @Html.DisplayFor(model => model.IdPedido)
+                        </a>
+                    </dd>
+                    <dt class="col-sm-4">
+                        Cliente
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.Pedido!.Cliente!.Nombre)
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Producto!.Nombre)
+                    </dt>
+                    <dd class="col-sm-8">
+                        <strong>@Html.DisplayFor(model => model.Producto!.Nombre)</strong>
+                        @if (!string.IsNullOrEmpty(Model.Producto?.Descripcion))
+                        {
+                            <br><small class="text-muted">@Html.DisplayFor(model => model.Producto.Descripcion)</small>
+                        }
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Cantidad)
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-info fs-6">@Html.DisplayFor(model => model.Cantidad) unidades</span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.PrecioUnitario)
+                    </dt>
+                    <dd class="col-sm-8">
+                        @Html.DisplayFor(model => model.PrecioUnitario)
+                    </dd>
+                    <dt class="col-sm-4">
+                        <strong>Subtotal</strong>
+                    </dt>
+                    <dd class="col-sm-8">
+                        <strong class="text-success">@((Model.Cantidad * Model.PrecioUnitario).ToString("C"))</strong>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>?? Impacto de la Eliminación</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>?? Stock del Producto</h6>
+                        <p><strong>Stock actual:</strong> <span class="badge bg-secondary">@Model.Producto!.Stock unidades</span></p>
+                        <p><strong>Stock después:</strong> <span class="badge bg-success">@(Model.Producto.Stock + Model.Cantidad) unidades</span></p>
+                        <p><small class="text-success">? Se restaurarán @Model.Cantidad unidades</small></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>?? Monto del Pedido</h6>
+                        <p><strong>Se descontará:</strong> <span class="text-danger">@((Model.Cantidad * Model.PrecioUnitario).ToString("C"))</span></p>
+                        <p><small class="text-info">?? El monto total del pedido se recalculará automáticamente</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>??? Acciones</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            ??? Confirmar Eliminación
+                        </button>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            ?? Editar en su lugar
+                        </a>
+                        <hr>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ? Volver a la Lista
+                        </a>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
+                            ??? Ver Detalles
+                        </a>
+                        <a asp-controller="Pedido" asp-action="Details" asp-route-id="@Model.IdPedido" class="btn btn-outline-primary">
+                            ?? Ver Pedido Completo
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6>?? Recordatorio</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <ul class="mb-0">
+                        <li>El stock se restaurará automáticamente</li>
+                        <li>El monto del pedido se actualizará</li>
+                        <li>Esta acción no se puede deshacer</li>
+                        <li>Puede editar en lugar de eliminar</li>
+                    </ul>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

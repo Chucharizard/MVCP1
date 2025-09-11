@@ -1,0 +1,177 @@
+@model WAMVC.Models.DetallePedidoModel
+
+@{
+    ViewData["Title"] = "Agregar Artículo al Pedido";
+}
+
+<h1>Agregar Artículo al Pedido</h1>
+
+<h4>Información del Detalle</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="IdPedido" class="control-label"></label>
+                @if (ViewData["PedidoSeleccionado"] != null)
+                {
+                    <select asp-for="IdPedido" class="form-control" asp-items="ViewBag.IdPedido" disabled>
+                        <option value="">-- Seleccione un pedido --</option>
+                    </select>
+                    <input type="hidden" asp-for="IdPedido" />
+                    <small class="form-text text-muted">Pedido pre-seleccionado</small>
+                }
+                else
+                {
+                    <select asp-for="IdPedido" class="form-control" asp-items="ViewBag.IdPedido">
+                        <option value="">-- Seleccione un pedido --</option>
+                    </select>
+                }
+                <span asp-validation-for="IdPedido" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="IdProducto" class="control-label"></label>
+                <select asp-for="IdProducto" class="form-control" asp-items="ViewBag.IdProducto" id="productoSelect">
+                    <option value="">-- Seleccione un producto --</option>
+                </select>
+                <span asp-validation-for="IdProducto" class="text-danger"></span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Cantidad" class="control-label"></label>
+                        <input asp-for="Cantidad" class="form-control" type="number" min="1" max="1000" id="cantidadInput" />
+                        <span asp-validation-for="Cantidad" class="text-danger"></span>
+                        <small id="stockInfo" class="form-text text-muted"></small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="PrecioUnitario" class="control-label"></label>
+                        <input asp-for="PrecioUnitario" class="form-control" step="0.01" id="precioInput" readonly />
+                        <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+                        <small class="form-text text-muted">Se usa el precio actual del producto</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>?? Cálculo del Subtotal</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Cantidad:</strong> <span id="displayCantidad">0</span> unidades</p>
+                            <p><strong>Precio unitario:</strong> <span id="displayPrecio">$0.00</span></p>
+                            <hr>
+                            <p><strong>Subtotal:</strong> <span id="displaySubtotal" class="text-success">$0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mt-3">
+                <input type="submit" value="Agregar al Pedido" class="btn btn-primary" id="submitBtn" disabled />
+                <a asp-action="Index" class="btn btn-secondary">Volver a la Lista</a>
+                @if (ViewData["PedidoSeleccionado"] != null)
+                {
+                    <a asp-controller="Pedido" asp-action="Details" asp-route-id="@ViewData["PedidoSeleccionado"]" class="btn btn-outline-info">Ver Pedido</a>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            let stockDisponible = 0;
+            
+            // Cuando cambie el producto seleccionado
+            $('#productoSelect').change(function() {
+                var idProducto = $(this).val();
+                if (idProducto) {
+                    // Obtener información del producto
+                    $.ajax({
+                        url: '@Url.Action("ObtenerPrecioProducto", "DetallePedido")',
+                        type: 'GET',
+                        data: { idProducto: idProducto },
+                        success: function(data) {
+                            $('#precioInput').val(data.precio.toFixed(2));
+                            stockDisponible = data.stock;
+                            
+                            if (data.stock > 0) {
+                                $('#stockInfo').text(`Stock disponible: ${data.stock} unidades`).removeClass('text-danger').addClass('text-success');
+                                $('#cantidadInput').attr('max', data.stock);
+                                $('#cantidadInput').prop('disabled', false);
+                            } else {
+                                $('#stockInfo').text('Sin stock disponible').removeClass('text-success').addClass('text-danger');
+                                $('#cantidadInput').prop('disabled', true);
+                            }
+                            
+                            calcularSubtotal();
+                            validarFormulario();
+                        }
+                    });
+                } else {
+                    $('#precioInput').val('');
+                    $('#stockInfo').text('');
+                    $('#cantidadInput').prop('disabled', true);
+                    stockDisponible = 0;
+                    calcularSubtotal();
+                    validarFormulario();
+                }
+            });
+            
+            // Cuando cambie la cantidad
+            $('#cantidadInput').on('input', function() {
+                var cantidad = parseInt($(this).val()) || 0;
+                
+                if (cantidad > stockDisponible) {
+                    $(this).val(stockDisponible);
+                    cantidad = stockDisponible;
+                }
+                
+                calcularSubtotal();
+                validarFormulario();
+            });
+            
+            function calcularSubtotal() {
+                var cantidad = parseInt($('#cantidadInput').val()) || 0;
+                var precio = parseFloat($('#precioInput').val()) || 0;
+                var subtotal = cantidad * precio;
+                
+                $('#displayCantidad').text(cantidad);
+                $('#displayPrecio').text('$' + precio.toFixed(2));
+                $('#displaySubtotal').text('$' + subtotal.toFixed(2));
+            }
+            
+            function validarFormulario() {
+                var pedido = $('#IdPedido').val();
+                var producto = $('#productoSelect').val();
+                var cantidad = parseInt($('#cantidadInput').val()) || 0;
+                
+                if (pedido && producto && cantidad > 0 && cantidad <= stockDisponible) {
+                    $('#submitBtn').prop('disabled', false);
+                } else {
+                    $('#submitBtn').prop('disabled', true);
+                }
+            }
+            
+            // Validaciones iniciales
+            $('#IdPedido').change(validarFormulario);
+            
+            // Si hay un pedido pre-seleccionado, validar
+            if ($('#IdPedido').val()) {
+                validarFormulario();
+            }
+        });
+    </script>
+}
