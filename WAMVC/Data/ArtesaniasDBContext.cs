@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+Ôªøusing Microsoft.EntityFrameworkCore;
 using WAMVC.Models;
 
 namespace WAMVC.Data
@@ -13,10 +13,11 @@ namespace WAMVC.Data
         public DbSet<ClienteModel> Clientes { get; set; }
         public DbSet<PedidoModel> Pedidos { get; set; }
         public DbSet<DetallePedidoModel> DetallePedidos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }  // ‚Üê AGREGADO
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ConfiguraciÛn de precisiÛn para campos decimales
+            // Configuraci√≥n de precisi√≥n para campos decimales
             modelBuilder.Entity<ProductoModel>()
                 .Property(p => p.Precio)
                 .HasPrecision(10, 2);
@@ -29,7 +30,7 @@ namespace WAMVC.Data
                 .Property(d => d.PrecioUnitario)
                 .HasPrecision(10, 2);
 
-            // ConfiguraciÛn de longitudes para campos de texto
+            // Configuraci√≥n de longitudes para campos de texto
             modelBuilder.Entity<ClienteModel>()
                 .Property(c => c.Nombre)
                 .HasMaxLength(100);
@@ -50,7 +51,26 @@ namespace WAMVC.Data
                 .Property(p => p.Descripcion)
                 .HasMaxLength(500);
 
-            // ConfiguraciÛn de relaciones
+          
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.Email)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.Password)
+                .HasMaxLength(500)  // Para BCrypt hash
+                .IsRequired();
+
+            modelBuilder.Entity<Usuario>()
+                .Property(u => u.Rol)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
             modelBuilder.Entity<PedidoModel>()
                 .HasOne(p => p.Cliente)
                 .WithMany(c => c.Pedidos)
