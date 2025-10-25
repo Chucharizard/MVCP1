@@ -9,7 +9,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<WAMVC.Data.ArtesaniasDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configuración de autenticación con cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -39,12 +38,42 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOrEmpleado", policy =>
         policy.RequireRole("Admin", "Empleado"));
 
-    // Política que requiere estar autenticado
+ 
     options.AddPolicy("Authenticated", policy =>
         policy.RequireAuthenticatedUser());
 });
 
 var app = builder.Build();
+
+
+//usuario por defecto juas juas
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<WAMVC.Data.ArtesaniasDBContext>();
+
+    if (!context.Usuarios.Any())
+    {
+        context.Usuarios.Add(new WAMVC.Models.Usuario
+        {
+            Email = "admin@admin.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
+            Rol = "Admin",
+            Activo = true
+        });
+
+        context.Usuarios.Add(new WAMVC.Models.Usuario
+        {
+            Email = "usuario@test.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+            Rol = "Usuario",
+            Activo = true
+        });
+
+        context.SaveChanges();
+    }
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -58,7 +87,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();  // ← NO OLVIDES ESTO
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllerRoute(

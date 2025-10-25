@@ -79,5 +79,64 @@ namespace WAMVC.Controllers
         {
             return View();
         }
+
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(string email, string password, string confirmPassword)
+        {
+            // Validar contraseñas coinciden
+            if (password != confirmPassword)
+            {
+                ViewBag.Error = "Las contraseñas no coinciden";
+                return View();
+            }
+
+            // Validar que el email no exista
+            if (_context.Usuarios.Any(u => u.Email == email))
+            {
+                ViewBag.Error = "El email ya está registrado";
+                return View();
+            }
+
+            // Crear nuevo usuario
+            var usuario = new Usuario
+            {
+                Email = email,
+                Password = BCrypt.Net.BCrypt.HashPassword(password),
+                Rol = "Usuario", // Rol por defecto
+                Activo = true
+            };
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            // Iniciar sesión automáticamente
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, usuario.Email),
+        new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+        new Claim(ClaimTypes.Role, usuario.Rol)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
     }
 }
