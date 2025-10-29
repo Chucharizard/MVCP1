@@ -45,8 +45,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-
-//usuario por defecto juas juas
+//usuarios por defecto
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<WAMVC.Data.ArtesaniasDBContext>();
@@ -58,6 +57,14 @@ using (var scope = app.Services.CreateScope())
             Email = "admin@admin.com",
             Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
             Rol = "Admin",
+            Activo = true
+        });
+
+        context.Usuarios.Add(new WAMVC.Models.Usuario
+        {
+            Email = "empleado@empresa.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("empleado123"),
+            Rol = "Empleado",
             Activo = true
         });
 

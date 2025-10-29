@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Gestión de Detalles de Pedidos";
+    var esAdmin = User.IsInRole("Admin");
+    var esEmpleado = User.IsInRole("Empleado");
+    var puedeGestionar = esAdmin || esEmpleado;
 }
 
 <h1>Gestión de Detalles de Pedidos</h1>
@@ -23,8 +26,15 @@
 }
 
 <p>
-    <a asp-action="Create" class="btn btn-primary"> Agregar Nuevo Detalle</a>
-    <a asp-controller="Pedido" asp-action="Index" class="btn btn-secondary"> Ver Pedidos</a>
+    @if (puedeGestionar)
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Agregar Nuevo Detalle
+        </a>
+    }
+    <a asp-controller="Pedido" asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-list"></i> Ver Pedidos
+    </a>
 </p>
 
 @if (Model.Any())
@@ -68,9 +78,18 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Editar">✏️</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Ver Detalles">👁️</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Eliminar">🗑️</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @if (puedeGestionar)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -120,7 +139,10 @@ else
         <p>Comienza agregando artículos a los pedidos existentes.</p>
         <hr>
         <p class="mb-0">
-            <a asp-action="Create" class="btn btn-primary">Agregar Primer Detalle</a>
+            @if (puedeGestionar)
+            {
+                <a asp-action="Create" class="btn btn-primary">Agregar Primer Detalle</a>
+            }
             <a asp-controller="Pedido" asp-action="Index" class="btn btn-outline-secondary">Ver Pedidos</a>
         </p>
     </div>

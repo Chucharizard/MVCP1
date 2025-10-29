@@ -21,13 +21,13 @@ namespace WAMVC.Controllers
             _context = context;
         }
 
-        // GET: Cliente
+        // GET: Cliente - Todos pueden ver
         public async Task<IActionResult> Index()
         {
             return View(await _context.Clientes.ToListAsync());
         }
 
-        // GET: Cliente/Details/5
+        // GET: Cliente/Details - Todos pueden ver detalles
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,14 +45,14 @@ namespace WAMVC.Controllers
             return View(clienteModel);
         }
 
-        // GET: Cliente/Create
+        // GET: Cliente/Create - Solo Admin puede crear
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Cliente/Create
+        // POST: Cliente/Create - Solo Admin puede crear
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -68,8 +68,8 @@ namespace WAMVC.Controllers
             return View(clienteModel);
         }
 
-        // GET: Cliente/Edit/5
-        [Authorize(Roles = "Admin")]
+        // GET: Cliente/Edit - Admin y Empleado pueden editar
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,10 +85,10 @@ namespace WAMVC.Controllers
             return View(clienteModel);
         }
 
-        // POST: Cliente/Edit/5
+        // POST: Cliente/Edit - Admin y Empleado pueden editar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Email,Direccion")] ClienteModel clienteModel)
         {
             if (id != clienteModel.Id)
@@ -120,7 +120,7 @@ namespace WAMVC.Controllers
             return View(clienteModel);
         }
 
-        // GET: Cliente/Delete/5
+        // GET: Cliente/Delete - Solo Admin puede eliminar
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -139,7 +139,7 @@ namespace WAMVC.Controllers
             return View(clienteModel);
         }
 
-        // POST: Cliente/Delete/5
+        // POST: Cliente/Delete - Solo Admin puede eliminar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]

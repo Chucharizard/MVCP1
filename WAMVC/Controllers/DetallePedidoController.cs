@@ -21,7 +21,7 @@ namespace WAMVC.Controllers
             _context = context;
         }
 
-        // GET: DetallePedido
+        // GET: DetallePedido - Todos pueden ver
         public async Task<IActionResult> Index()
         {
             var detallePedidos = await _context.DetallePedidos
@@ -32,6 +32,7 @@ namespace WAMVC.Controllers
             return View(detallePedidos);
         }
 
+        // GET: DetallePedido/Details - Todos pueden ver detalles
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,7 +54,8 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
-        // GET: DetallePedido/Create
+        // GET: DetallePedido/Create - Admin y Empleado pueden crear
+        [Authorize(Roles = "Admin,Empleado")]
         public IActionResult Create(int? pedidoId)
         {
             PopulateDropdowns();
@@ -68,9 +70,10 @@ namespace WAMVC.Controllers
             return View(detalle);
         }
 
-        // POST: DetallePedido/Create
+        // POST: DetallePedido/Create - Admin y Empleado pueden crear
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Create([Bind("Id,IdPedido,IdProducto,Cantidad,PrecioUnitario")] DetallePedidoModel detallePedidoModel)
         {
             if (ModelState.IsValid)
@@ -91,7 +94,7 @@ namespace WAMVC.Controllers
                     return View(detallePedidoModel);
                 }
 
-                // Usar el precio actual del producto si no se especificó
+                // Usar el precio actual del producto si no se especifi
                 if (detallePedidoModel.PrecioUnitario <= 0)
                 {
                     detallePedidoModel.PrecioUnitario = producto.Precio;
@@ -115,6 +118,8 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
+        // GET: DetallePedido/Edit - Admin y Empleado pueden editar
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -137,8 +142,10 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
+        // POST: DetallePedido/Edit - Admin y Empleado pueden editar
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdPedido,IdProducto,Cantidad,PrecioUnitario")] DetallePedidoModel detallePedidoModel, int cantidadOriginal)
         {
             if (id != detallePedidoModel.Id)
@@ -198,6 +205,8 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
+        // GET: DetallePedido/Delete - Admin y Empleado pueden eliminar
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -219,8 +228,10 @@ namespace WAMVC.Controllers
             return View(detallePedidoModel);
         }
 
+        // POST: DetallePedido/Delete - Admin y Empleado pueden eliminar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var detallePedidoModel = await _context.DetallePedidos

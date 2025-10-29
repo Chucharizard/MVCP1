@@ -1,5 +1,7 @@
 ﻿@{
     var esAdmin = User.IsInRole("Admin");
+    var esEmpleado = User.IsInRole("Empleado");
+    var puedeGestionar = esAdmin || esEmpleado;
 }
 
 <!DOCTYPE html>
@@ -33,13 +35,9 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @* Solo Admin ve Clientes *@
-                            if (esAdmin)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Clientes</a>
-                                </li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Clientes</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Producto" asp-action="Index">Productos</a>
                             </li>
@@ -62,12 +60,38 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
+                                    @if (esAdmin)
+                                    {
+                                        <i class="bi bi-person-circle text-primary"></i>
+                                    }
+                                    else if (esEmpleado)
+                                    {
+                                        <i class="bi bi-person-badge text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-person text-success"></i>
+                                    }
+                                    @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li>
                                         <span class="dropdown-item-text">
-                                            <small class="text-muted">Rol: @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</small>
+                                            <small class="text-muted">
+                                                Rol: 
+                                                @if (esAdmin)
+                                                {
+                                                    <span class="badge bg-primary">Admin</span>
+                                                }
+                                                else if (esEmpleado)
+                                                {
+                                                    <span class="badge bg-warning">Empleado</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Usuario</span>
+                                                }
+                                            </small>
                                         </span>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>

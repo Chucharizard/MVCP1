@@ -21,7 +21,7 @@ namespace WAMVC.Controllers
             _context = context;
         }
 
-        // GET: Pedido
+        // GET: Pedido - Todos pueden ver
         public async Task<IActionResult> Index()
         {
             var pedidos = await _context.Pedidos
@@ -30,7 +30,7 @@ namespace WAMVC.Controllers
             return View(pedidos);
         }
 
-        // GET: Pedido/Details
+        // GET: Pedido/Details - Todos pueden ver detalles
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -52,7 +52,8 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // GET: Pedido/Create
+        // GET: Pedido/Create - Admin y Empleado pueden crear
+        [Authorize(Roles = "Admin,Empleado")]
         public IActionResult Create()
         {
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "Id", "Nombre");
@@ -63,9 +64,10 @@ namespace WAMVC.Controllers
             return View(pedido);
         }
 
-        // POST: Pedido/Create
+        // POST: Pedido/Create - Admin y Empleado pueden crear
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Create([Bind("Id,IdCliente,FechaPedido,Direccion,MontoTotal")] PedidoModel pedidoModel)
         {
             if (ModelState.IsValid)
@@ -79,7 +81,8 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // GET: Pedido/Edit
+        // GET: Pedido/Edit - Admin y Empleado pueden editar
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,9 +99,10 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // POST: Pedido/Edit
+        // POST: Pedido/Edit - Admin y Empleado pueden editar
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdCliente,FechaPedido,Direccion,MontoTotal")] PedidoModel pedidoModel)
         {
             if (id != pedidoModel.Id)
@@ -131,7 +135,8 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // GET: Pedido/Delete
+        // GET: Pedido/Delete - Admin y Empleado pueden eliminar
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -151,9 +156,10 @@ namespace WAMVC.Controllers
             return View(pedidoModel);
         }
 
-        // POST: Pedido/Delete
+        // POST: Pedido/Delete - Admin y Empleado pueden eliminar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Empleado")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var pedidoModel = await _context.Pedidos.FindAsync(id);

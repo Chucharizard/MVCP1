@@ -21,13 +21,13 @@ namespace WAMVC.Controllers
             _context = context;
         }
 
-        // GET: Producto
+        // GET: Producto - Todos pueden ver
         public async Task<IActionResult> Index()
         {
             return View(await _context.Productos.ToListAsync());
         }
 
-        // GET: Producto/Details
+        // GET: Producto/Details - Todos pueden ver detalles
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,14 +45,14 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // GET: Producto/Create
+        // GET: Producto/Create - Solo Admin puede crear
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Producto/Create
+        // POST: Producto/Create - Solo Admin puede crear
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -67,7 +67,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // GET: Producto/Edit/5
+        // GET: Producto/Edit - Solo Admin puede editar
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -84,7 +84,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // POST: Producto/Edit/5
+        // POST: Producto/Edit - Solo Admin puede editar
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -118,7 +118,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // GET: Producto/Delete
+        // GET: Producto/Delete - Solo Admin puede eliminar
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,7 +137,7 @@ namespace WAMVC.Controllers
             return View(productoModel);
         }
 
-        // POST: Producto/Delete
+        // POST: Producto/Delete - Solo Admin puede eliminar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]

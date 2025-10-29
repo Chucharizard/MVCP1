@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Lista de Pedidos";
+    var esAdmin = User.IsInRole("Admin");
+    var esEmpleado = User.IsInRole("Empleado");
+    var puedeGestionar = esAdmin || esEmpleado;
 }
 
 <h1>Lista de Pedidos</h1>
@@ -22,9 +25,14 @@
     </div>
 }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Pedido</a>
-</p>
+@if (puedeGestionar)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Pedido
+        </a>
+    </p>
+}
 
 @if (Model.Any())
 {
@@ -50,9 +58,18 @@
                         <td>@Html.DisplayFor(modelItem => item.Direccion)</td>
                         <td>@Html.DisplayFor(modelItem => item.MontoTotal)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalles</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i> Detalles
+                            </a>
+                            @if (puedeGestionar)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </a>
+                            }
                         </td>
                     </tr>
                 }
@@ -64,6 +81,12 @@ else
 {
     <div class="alert alert-info" role="alert">
         <h4 class="alert-heading">No hay pedidos registrados</h4>
-        <p>Aún no has creado ningún pedido. <a asp-action="Create" class="alert-link">Haz clic aquí para crear tu primer pedido</a>.</p>
+        <p>
+            Aún no has creado ningún pedido. 
+            @if (puedeGestionar)
+            {
+                <a asp-action="Create" class="alert-link">Haz clic aquí para crear tu primer pedido</a>
+            }
+        </p>
     </div>
 }

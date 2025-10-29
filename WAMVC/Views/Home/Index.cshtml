@@ -3,36 +3,74 @@
 @{
     ViewData["Title"] = "Inicio - Artesanías";
     var esAdmin = User.IsInRole("Admin");
+    var esEmpleado = User.IsInRole("Empleado");
+    var puedeGestionar = esAdmin || esEmpleado;
 }
 
 <div class="text-center mb-5">
     <h1 class="display-4 text-primary">@Model.Mensaje</h1>
     <h2 class="h3 text-secondary">@Model.Destinatario</h2>
     <p class="lead">Gestiona tu negocio de manera sencilla</p>
+    
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-info d-inline-block">
+            @if (esAdmin)
+            {
+                <text><i class="bi bi-shield-check"></i> <strong>Bienvenido Administrador</strong> - Tienes acceso completo al sistema</text>
+            }
+            else if (esEmpleado)
+            {
+                <text><i class="bi bi-person-badge"></i> <strong>Bienvenido Empleado</strong> - Puedes gestionar pedidos y clientes</text>
+            }
+            else
+            {
+                <text><i class="bi bi-person"></i> <strong>Bienvenido Usuario</strong> - Puedes consultar información del sistema</text>
+            }
+        </div>
+    }
 </div>
 
 <div class="row g-4">
-    @* Solo Admin ve la sección de Clientes *@
-    @if (esAdmin)
-    {
-        <div class="col-md-6 col-lg-3">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <div class="display-1 text-primary mb-3">👥</div>
-                    <h5 class="card-title">Clientes</h5>
-                    <p class="card-text">Gestiona tus clientes</p>
-                    <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Ver Clientes</a>
-                </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <div class="display-1 text-primary mb-3">👥</div>
+                <h5 class="card-title">Clientes</h5>
+                <p class="card-text">
+                    @if (esAdmin)
+                    {
+                        <small class="text-success">✓ Gestión completa</small>
+                    }
+                    else if (esEmpleado)
+                    {
+                        <small class="text-warning">✓ Ver y editar</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Solo lectura</small>
+                    }
+                </p>
+                <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Ver Clientes</a>
             </div>
         </div>
-    }
+    </div>
 
     <div class="col-md-6 col-lg-3">
         <div class="card h-100 text-center">
             <div class="card-body">
                 <div class="display-1 text-success mb-3">📦</div>
                 <h5 class="card-title">Productos</h5>
-                <p class="card-text">Catálogo de artesanías</p>
+                <p class="card-text">
+                    @if (esAdmin)
+                    {
+                        <small class="text-success">✓ Gestión completa</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Solo lectura</small>
+                    }
+                </p>
                 <a href="@Url.Action("Index", "Producto")" class="btn btn-success">Ver Productos</a>
             </div>
         </div>
@@ -43,7 +81,16 @@
             <div class="card-body">
                 <div class="display-1 text-warning mb-3">🛒</div>
                 <h5 class="card-title">Pedidos</h5>
-                <p class="card-text">Gestiona las ventas</p>
+                <p class="card-text">
+                    @if (puedeGestionar)
+                    {
+                        <small class="text-success">✓ Gestión completa</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Solo lectura</small>
+                    }
+                </p>
                 <a href="@Url.Action("Index", "Pedido")" class="btn btn-warning">Ver Pedidos</a>
             </div>
         </div>
@@ -54,41 +101,56 @@
             <div class="card-body">
                 <div class="display-1 text-info mb-3">📋</div>
                 <h5 class="card-title">Detalles</h5>
-                <p class="card-text">Información detallada</p>
+                <p class="card-text">
+                    @if (puedeGestionar)
+                    {
+                        <small class="text-success">✓ Gestión completa</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Solo lectura</small>
+                    }
+                </p>
                 <a href="@Url.Action("Index", "DetallePedido")" class="btn btn-info">Ver Detalles</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-12">
-        <h4 class="text-center mb-4">Acciones Rápidas</h4>
-        <div class="row g-3 justify-content-center">
-            @if (esAdmin)
-            {
-                <div class="col-md-4">
-                    <div class="d-grid">
-                        <a href="@Url.Action("Create", "Cliente")" class="btn btn-outline-primary btn-lg">
-                            Nuevo Cliente
-                        </a>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="text-center mb-4">Acciones Rápidas</h4>
+            <div class="row g-3 justify-content-center">
+                @if (esAdmin)
+                {
+                    <div class="col-md-3">
+                        <div class="d-grid">
+                            <a href="@Url.Action("Create", "Cliente")" class="btn btn-outline-primary btn-lg">
+                                <i class="bi bi-plus-circle"></i> Nuevo Cliente
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="d-grid">
-                        <a href="@Url.Action("Create", "Producto")" class="btn btn-outline-success btn-lg">
-                            Nuevo Producto
-                        </a>
+                    <div class="col-md-3">
+                        <div class="d-grid">
+                            <a href="@Url.Action("Create", "Producto")" class="btn btn-outline-success btn-lg">
+                                <i class="bi bi-plus-circle"></i> Nuevo Producto
+                            </a>
+                        </div>
                     </div>
-                </div>
-            }
-            <div class="col-md-4">
-                <div class="d-grid">
-                    <a href="@Url.Action("Create", "Pedido")" class="btn btn-outline-warning btn-lg">
-                        Nuevo Pedido
-                    </a>
-                </div>
+                }
+                @if (puedeGestionar)
+                {
+                    <div class="col-md-3">
+                        <div class="d-grid">
+                            <a href="@Url.Action("Create", "Pedido")" class="btn btn-outline-warning btn-lg">
+                                <i class="bi bi-plus-circle"></i> Nuevo Pedido
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
-</div>
+}
