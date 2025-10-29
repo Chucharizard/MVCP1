@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
-// Configuración de autorización con políticas
+// Config de auth con pol
 builder.Services.AddAuthorization(options =>
 {
     // Política para Administradores

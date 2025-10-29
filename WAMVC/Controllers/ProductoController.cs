@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WAMVC.Data;
 using WAMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WAMVC.Controllers
 {
+    [Authorize]
     public class ProductoController : Controller
     {
         private readonly ArtesaniasDBContext _context;
@@ -44,16 +46,16 @@ namespace WAMVC.Controllers
         }
 
         // GET: Producto/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Producto/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Precio,Stock")] ProductoModel productoModel)
         {
             if (ModelState.IsValid)
@@ -66,6 +68,7 @@ namespace WAMVC.Controllers
         }
 
         // GET: Producto/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,10 +85,9 @@ namespace WAMVC.Controllers
         }
 
         // POST: Producto/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Precio,Stock")] ProductoModel productoModel)
         {
             if (id != productoModel.Id)
@@ -117,6 +119,7 @@ namespace WAMVC.Controllers
         }
 
         // GET: Producto/Delete
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +140,7 @@ namespace WAMVC.Controllers
         // POST: Producto/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productoModel = await _context.Productos.FindAsync(id);
