@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WAMVC.Data;
 using WAMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WAMVC.Controllers
 {
+    [Authorize]
     public class DetallePedidoController : Controller
     {
         private readonly ArtesaniasDBContext _context;

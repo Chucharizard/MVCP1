@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Lista de Productos";
+    var esAdmin = User.IsInRole("Admin");
 }
 
 <h1>Lista de Productos</h1>
@@ -22,9 +23,13 @@
     </div>
 }
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Producto</a>
-</p>
+@* Solo Admin puede crear productos *@
+@if (esAdmin)
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Crear Nuevo Producto</a>
+    </p>
+}
 
 @if (Model.Any())
 {
@@ -48,9 +53,16 @@
                         <td>@Html.DisplayFor(modelItem => item.Precio)</td>
                         <td>@Html.DisplayFor(modelItem => item.Stock)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                            @* Solo Admin puede editar y eliminar *@
+                            @if (esAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                            }
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalles</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            @if (esAdmin)
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                            }
                         </td>
                     </tr>
                 }
@@ -62,6 +74,13 @@ else
 {
     <div class="alert alert-info" role="alert">
         <h4 class="alert-heading">No hay productos registrados</h4>
-        <p>Aún no has creado ningún producto. <a asp-action="Create" class="alert-link">Haz clic aquí para crear tu primer producto</a>.</p>
+        @if (esAdmin)
+        {
+            <p>Aún no has creado ningún producto. <a asp-action="Create" class="alert-link">Haz clic aquí para crear tu primer producto</a>.</p>
+        }
+        else
+        {
+            <p>No hay productos disponibles en este momento.</p>
+        }
     </div>
 }

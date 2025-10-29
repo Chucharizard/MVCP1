@@ -1,6 +1,8 @@
 ﻿@model HomeModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Inicio - Artesanías";
+    var esAdmin = User.IsInRole("Admin");
 }
 
 <div class="text-center mb-5">
@@ -10,17 +12,21 @@
 </div>
 
 <div class="row g-4">
-    <div class="col-md-6 col-lg-3">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <div class="display-1 text-primary mb-3">👥</div>
-                <h5 class="card-title">Clientes</h5>
-                <p class="card-text">Gestiona tus clientes</p>
-                <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Ver Clientes</a>
+    @* Solo Admin ve la sección de Clientes *@
+    @if (esAdmin)
+    {
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="display-1 text-primary mb-3">👥</div>
+                    <h5 class="card-title">Clientes</h5>
+                    <p class="card-text">Gestiona tus clientes</p>
+                    <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Ver Clientes</a>
+                </div>
             </div>
         </div>
-    </div>
-    
+    }
+
     <div class="col-md-6 col-lg-3">
         <div class="card h-100 text-center">
             <div class="card-body">
@@ -31,7 +37,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6 col-lg-3">
         <div class="card h-100 text-center">
             <div class="card-body">
@@ -42,7 +48,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6 col-lg-3">
         <div class="card h-100 text-center">
             <div class="card-body">
@@ -58,21 +64,24 @@
 <div class="row mt-5">
     <div class="col-12">
         <h4 class="text-center mb-4">Acciones Rápidas</h4>
-        <div class="row g-3">
-            <div class="col-md-4">
-                <div class="d-grid">
-                    <a href="@Url.Action("Create", "Cliente")" class="btn btn-outline-primary btn-lg">
-                        Nuevo Cliente
-                    </a>
+        <div class="row g-3 justify-content-center">
+            @if (esAdmin)
+            {
+                <div class="col-md-4">
+                    <div class="d-grid">
+                        <a href="@Url.Action("Create", "Cliente")" class="btn btn-outline-primary btn-lg">
+                            Nuevo Cliente
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="d-grid">
-                    <a href="@Url.Action("Create", "Producto")" class="btn btn-outline-success btn-lg">
-                        Nuevo Producto
-                    </a>
+                <div class="col-md-4">
+                    <div class="d-grid">
+                        <a href="@Url.Action("Create", "Producto")" class="btn btn-outline-success btn-lg">
+                            Nuevo Producto
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
             <div class="col-md-4">
                 <div class="d-grid">
                     <a href="@Url.Action("Create", "Pedido")" class="btn btn-outline-warning btn-lg">
