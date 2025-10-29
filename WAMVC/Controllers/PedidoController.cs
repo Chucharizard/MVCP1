@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WAMVC.Data;
 using WAMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WAMVC.Controllers
 {
+    [Authorize]
     public class PedidoController : Controller
     {
         private readonly ArtesaniasDBContext _context;
@@ -41,7 +43,7 @@ namespace WAMVC.Controllers
                 .Include(p => p.DetallePedidos)
                     .ThenInclude(d => d.Producto)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            
+
             if (pedidoModel == null)
             {
                 return NotFound();
@@ -140,7 +142,7 @@ namespace WAMVC.Controllers
             var pedidoModel = await _context.Pedidos
                 .Include(p => p.Cliente)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            
+
             if (pedidoModel == null)
             {
                 return NotFound();

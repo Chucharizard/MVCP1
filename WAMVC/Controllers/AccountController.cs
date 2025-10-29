@@ -17,24 +17,22 @@ namespace WAMVC.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult Login()
         {
             if (User.Identity?.IsAuthenticated == true)
-            {
                 return RedirectToAction("Index", "Home");
-            }
+
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login(string email, string password)
         {
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == email && u.Activo);
 
             if (usuario != null && BCrypt.Net.BCrypt.Verify(password, usuario.Password))
             {
-                // Crear claims del usuario
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, usuario.Email),
@@ -54,11 +52,8 @@ namespace WAMVC.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                // Redirigir según el rol
                 if (usuario.Rol == "Admin")
-                {
                     return RedirectToAction("Index", "Producto");
-                }
 
                 return RedirectToAction("Index", "Home");
             }
@@ -67,66 +62,57 @@ namespace WAMVC.Controllers
             return View();
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpPost, Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+        [AllowAnonymous]
+        public IActionResult AccessDenied() => View();
 
-
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult Register()
         {
             if (User.Identity?.IsAuthenticated == true)
-            {
                 return RedirectToAction("Index", "Home");
-            }
+
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Register(string email, string password, string confirmPassword)
         {
-            // Validar contraseñas coinciden
             if (password != confirmPassword)
             {
                 ViewBag.Error = "Las contraseñas no coinciden";
                 return View();
             }
 
-            // Validar que el email no exista
             if (_context.Usuarios.Any(u => u.Email == email))
             {
                 ViewBag.Error = "El email ya está registrado";
                 return View();
             }
 
-            // Crear nuevo usuario
             var usuario = new Usuario
             {
                 Email = email,
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Rol = "Usuario", // Rol por defecto
+                Rol = "Usuario",
                 Activo = true
             };
 
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            // Iniciar sesión automáticamente
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, usuario.Email),
-        new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-        new Claim(ClaimTypes.Role, usuario.Rol)
-    };
+            {
+                new Claim(ClaimTypes.Name, usuario.Email),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Role, usuario.Rol)
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(
@@ -135,8 +121,5 @@ namespace WAMVC.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
-
-
     }
 }

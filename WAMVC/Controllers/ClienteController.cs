@@ -1,15 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using WAMVC.Data;
 using WAMVC.Models;
 
 namespace WAMVC.Controllers
 {
+    [Authorize]
     public class ClienteController : Controller
     {
         private readonly ArtesaniasDBContext _context;
@@ -44,16 +46,16 @@ namespace WAMVC.Controllers
         }
 
         // GET: Cliente/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Cliente/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Nombre,Email,Direccion")] ClienteModel clienteModel)
         {
             if (ModelState.IsValid)
@@ -67,6 +69,7 @@ namespace WAMVC.Controllers
         }
 
         // GET: Cliente/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,10 +86,9 @@ namespace WAMVC.Controllers
         }
 
         // POST: Cliente/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Email,Direccion")] ClienteModel clienteModel)
         {
             if (id != clienteModel.Id)
@@ -119,6 +121,7 @@ namespace WAMVC.Controllers
         }
 
         // GET: Cliente/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,6 +142,7 @@ namespace WAMVC.Controllers
         // POST: Cliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var clienteModel = await _context.Clientes.FindAsync(id);
